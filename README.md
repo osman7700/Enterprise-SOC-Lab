@@ -40,3 +40,34 @@ To validate the effectiveness of the monitoring system, a controlled RDP Brute F
 * **Attack Command:**
 ```bash
 hydra -L users.txt -P passwords.txt rdp://<TARGET_IP> -V
+
+
+Phase 3: Detection Engineering & SIEM Alerting (Splunk)
+Following the attack simulation, the generated logs were analyzed inside Splunk Enterprise to design and implement a robust correlation rule for real-time alerting.
+
+1. Log Analysis & Telemetry Identification
+Focused on monitoring the Windows Security Event ID 4625 (An account failed to log on).
+
+Extracted and filtered core investigative fields: TargetUserName (targeted account), IpAddress (source attacker IP), and Logon_Type (Type 10, indicating an RDP interactive network logon).
+
+2. Custom Splunk SPL Query
+Engineered a precise Search Processing Language (SPL) query designed to trigger an alert if a single source IP generates more than 10 failed logon attempts within a 5-minute time window:
+
+
+index=wineventlog EventCode=4625 Logon_Type=10
+| stats count by src_ip, TargetUserName
+| where count > 10
+
+3. Alert Configuration
+Trigger Condition: Evaluated on a scheduled basis, firing an alert immediately when the threshold count is breached.
+
+Severity: Configured as Medium/High based on risk alignment.
+
+Mitigation Strategy: In an enterprise production environment, this alert is designed to trigger an automated SOAR playbook to block the malicious source IP on the perimeter firewall and isolate the affected host.
+
+Technologies Used
+SIEM: Splunk Enterprise
+
+Endpoints: Windows Server, Windows 10/11, Kali Linux
+
+Telemetry: Microsoft Sysmon, Windows Event Logs
