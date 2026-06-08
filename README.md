@@ -33,9 +33,13 @@ To achieve deep visibility into the Windows ecosystem, advanced logging was conf
 
 ---
 
-##  Upcoming Phases
-* **Phase 2: Attack Simulation:** Executing specific MITRE ATT&CK techniques (e.g., Brute Force, RDP Hijacking, LSASS dumping) from the Kali Linux machine.
-* **Phase 3: Detection Engineering:** Writing custom Splunk SPL (Search Processing Language) queries to build alerts and dashboards for the simulated attacks.
+##  Phase 2: Attack Simulation (RDP Brute Force)
+To validate the effectiveness of the monitoring system, a controlled RDP Brute Force attack was executed from the **Kali Linux** machine against the **Windows endpoint**.
+
+* **Tool Used:** `Hydra` (or `Crowbar`)
+* **Attack Command:**
+```bash
+  hydra -L users.txt -P passwords.txt rdp://<TARGET_IP> -V
 
 ---
 ##  Technologies Used
